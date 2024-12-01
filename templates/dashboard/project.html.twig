@@ -1,0 +1,249 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <h1>{{ project }}</h1>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    {% set canvasClass = "p-2 h-60 w-1/2" %}
+    
+    <div class="flex">
+        <div class="{{ canvasClass }}"><canvas id="myChart1"></canvas></div>
+        <div class="{{ canvasClass }}"><canvas id="myChart4"></canvas></div>
+    </div>
+    <div class="flex">
+        <div class="{{ canvasClass }}"><canvas id="myChart2"></canvas></div>
+        <div class="{{ canvasClass }}"><canvas id="myChart3"></canvas></div>
+    </div>
+    <div class="flex">
+        <div class="{{ canvasClass }}"><canvas id="myChart5"></canvas></div>
+        <div class="{{ canvasClass }}"><canvas id="myChart6"></canvas></div>
+    </div>
+    <div class="flex">
+        <div class="{{ canvasClass }}"><canvas id="myChart7"></canvas></div>
+        <div class="{{ canvasClass }}"><canvas id="myChart8"></canvas></div>
+    </div>
+
+    {% for date,metrics in data %}
+        {% for metric,value in metrics %}
+            <pre>{{ metric }} = {{ value }}</pre>
+        {% endfor %}
+    {% endfor %}
+
+    <script>
+
+        const CHART_COLORS = {
+            red: 'rgb(255, 99, 132)',
+            orange: 'rgb(255, 159, 64)',
+            yellow: 'rgb(255, 205, 86)',
+            green: 'rgb(75, 192, 192)',
+            blue: 'rgb(54, 162, 235)',
+            purple: 'rgb(153, 102, 255)',
+            grey: 'rgb(201, 203, 207)'
+        };
+
+        // https://www.chartjs.org/docs/latest/samples/advanced/linear-gradient.html
+        //let width, height, gradient;
+        function getGradient(ctx, chartArea) {
+            const chartWidth = chartArea.right - chartArea.left;
+            const chartHeight = chartArea.bottom - chartArea.top;
+            if (!ctx.gradient || ctx.width !== chartWidth || ctx.height !== chartHeight) {
+                // Create the gradient because this is either the first render
+                // or the size of the chart has changed
+                ctx.width = chartWidth;
+                ctx.height = chartHeight;
+                ctx.gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+                ctx.gradient.addColorStop(0,   CHART_COLORS.green);
+                ctx.gradient.addColorStop(0.5, CHART_COLORS.yellow);
+                ctx.gradient.addColorStop(1,   CHART_COLORS.red);
+            }
+            return ctx.gradient;
+        }
+
+        _f = function(context) {
+            const chart = context.chart;
+            const {ctx, chartArea} = chart;
+            if (!chartArea) {
+                // This case happens on initial chart load
+                return;
+            }
+            return getGradient(ctx, chartArea);
+        }
+
+
+        const data1 = {
+            labels: [{% for date,metrics in data %}"{{ date }}",{% endfor %}],
+            datasets: [
+                {% for axis,metric in {'y1':'Classes', 'y2':'Lines of Code'} %}
+                {
+                    label: '{{ metric }}',
+                    data: [{% for date,metrics in data %}{{ metrics[metric] }},{% endfor %}],
+                    // borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    yAxisID: '{{ axis }}',
+                    borderColor: _f,
+                },
+                {% endfor %}
+            ],
+        };
+
+        const data2 = {
+            labels: [{% for date,metrics in data %}"{{ date }}",{% endfor %}],
+            datasets: [
+                {% for axis,metric in {'y1':'Average Class Length', 'y2':'Maximum Class Length'} %}
+                {
+                    label: '{{ metric }}',
+                    data: [{% for date,metrics in data %}{{ metrics[metric] }},{% endfor %}],
+                    // borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    yAxisID: '{{ axis }}',
+                    borderColor: _f,
+                },
+                {% endfor %}
+            ]
+        };
+
+        const data3 = {
+            labels: [{% for date,metrics in data %}"{{ date }}",{% endfor %}],
+            datasets: [
+                {% for axis,metric in {'y1':'Average Method Length', 'y2':'Maximum Method Length'} %}
+                {
+                    label: '{{ metric }}',
+                    data: [{% for date,metrics in data %}{{ metrics[metric] }},{% endfor %}],
+                    // borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    yAxisID: '{{ axis }}',
+                    borderColor: _f,
+                },
+                {% endfor %}
+            ]
+        };
+
+        const data4 = {
+            labels: [{% for date,metrics in data %}"{{ date }}",{% endfor %}],
+            datasets: [
+                {% for axis,metric in {'y1':'Average Complexity per LLOC'} %}
+                {
+                    label: '{{ metric }}',
+                    data: [{% for date,metrics in data %}{{ metrics[metric] }},{% endfor %}],
+                    // borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    yAxisID: '{{ axis }}',
+                    borderColor: _f,
+                },
+                {% endfor %}
+            ]
+        };
+
+        const data5 = {
+            labels: [{% for date,metrics in data %}"{{ date }}",{% endfor %}],
+            datasets: [
+                {% for axis,metric in {'y1':'Average Complexity per Class', 'y2':'Maximum Class Complexity'} %}
+                {
+                    label: '{{ metric }}',
+                    data: [{% for date,metrics in data %}{{ metrics[metric] }},{% endfor %}],
+                    // borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    yAxisID: '{{ axis }}',
+                    borderColor: _f,
+                },
+                {% endfor %}
+            ]
+        };
+
+        const data6 = {
+            labels: [{% for date,metrics in data %}"{{ date }}",{% endfor %}],
+            datasets: [
+                {% for axis,metric in {'y1':'Average Complexity per Method', 'y2':'Maximum Method Complexity'} %}
+                {
+                    label: '{{ metric }}',
+                    data: [{% for date,metrics in data %}{{ metrics[metric] }},{% endfor %}],
+                    // borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    yAxisID: '{{ axis }}',
+                    borderColor: _f,
+                },
+                {% endfor %}
+            ]
+        };
+
+        const data7 = {
+            labels: [{% for date,metrics in data %}"{{ date }}",{% endfor %}],
+            datasets: [
+                {% for axis,metric in {'y1':'PhpStan errors'} %}
+                {
+                    label: '{{ metric }}',
+                    data: [{% for date,metrics in data %}{{ metrics[metric] }},{% endfor %}],
+                    // borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    yAxisID: '{{ axis }}',
+                    borderColor: _f,
+                },
+                {% endfor %}
+            ]
+        };
+
+        const data8 = {
+            labels: [{% for date,metrics in data %}"{{ date }}",{% endfor %}],
+            datasets: [
+                {% for axis,metric in {'y1':'Security Check count'} %}
+                {
+                    label: '{{ metric }}',
+                    data: [{% for date,metrics in data %}{{ metrics[metric] }},{% endfor %}],
+                    // borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    yAxisID: '{{ axis }}',
+                    borderColor: _f,
+                },
+                {% endfor %}
+            ]
+        };
+
+        const options = {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
+            stacked: false,
+            plugins: {
+            },
+            scales: {
+                // x: {
+                //     type: 'time',
+                //     time: {
+                //         // Luxon format string
+                //         tooltipFormat: 'DD T'
+                //     },
+                // },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                },
+                y2: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+
+                    // grid line settings
+                    grid: {
+                        drawOnChartArea: false, // only want the grid lines for one axis to show up
+                    },
+                },
+            }
+        };
+
+
+        new Chart(document.getElementById('myChart1'), {type: 'line', data: data1, options: options});
+        new Chart(document.getElementById('myChart2'), {type: 'line', data: data2, options: options});
+        new Chart(document.getElementById('myChart3'), {type: 'line', data: data3, options: options});
+        new Chart(document.getElementById('myChart4'), {type: 'line', data: data4, options: options});
+        new Chart(document.getElementById('myChart5'), {type: 'line', data: data5, options: options});
+        new Chart(document.getElementById('myChart6'), {type: 'line', data: data6, options: options});
+        new Chart(document.getElementById('myChart7'), {type: 'line', data: data7, options: options});
+        new Chart(document.getElementById('myChart8'), {type: 'line', data: data8, options: options});
+    </script>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <h1>Dashboard</h1>
+
+    {% for project,dates in projects %}
+        <div>
+            <h2>{{ project }}</h2>
+
+            {% for date,metrics in dates %}
+                {% for metric,value in metrics %}
+                    <pre>{{ metric }} = {{ value }}</pre>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endblock %}

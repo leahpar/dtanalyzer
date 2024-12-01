@@ -1,0 +1,4 @@
+phploc
+phpstan
+security:check
+

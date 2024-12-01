@@ -1,0 +1,58 @@
+includes:
+	# Custom baseline
+	- phpstan-baseline.neon
+
+	# Doctrine
+	- vendor/phpstan/phpstan-doctrine/extension.neon
+	- vendor/phpstan/phpstan-doctrine/rules.neon
+
+	# Symfony
+	- vendor/phpstan/phpstan-symfony/extension.neon
+	- vendor/phpstan/phpstan-symfony/rules.neon
+
+	# Divers
+	- vendor/phpstan/phpstan-strict-rules/rules.neon
+
+parameters:
+	#level: 6
+	#paths:
+	#	- src
+	excludePaths:
+		- src/Migrations/*
+		- src/Import/*
+
+	# phpstan/phpstan-strict-rules
+	strictRules:
+		#disallowedLooseComparison: false
+		booleansInConditions: false
+		#uselessCast: false
+		#requireParentConstructorCall: false
+#		disallowedConstructs: false
+		#overwriteVariablesWithLoop: false
+		#closureUsesThis: false
+		#matchingInheritedMethodNames: false
+		#numericOperandsInArithmeticOperators: false
+#		strictCalls: false
+		#switchConditionsMatchingType: false
+		noVariableVariables: false
+		#strictArrayFilter: false
+
+	ignoreErrors:
+
+		#- identifier: missingType.generics
+		- identifier: missingType.iterableValue
+
+		# Doctrine template
+		- "#^Unable to resolve the template type T in call to method#"
+
+		# Callable peut être un string (nom de fonction interne)
+		- "#^Parameter \\#2 \\$callback of function array_filter expects#"
+
+		# Faux négatif sur Helper::ask()
+		- "#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface::ask#"
+
+		# Type coverage, géré par tomasvotruba/type-coverage
+		- "#^Method .* has no return type specified\\.$#"
+		- "#^Method .* has parameter .* with no type specified\\.$#"
+		- "#^Property .* has no type specified\\.$#"
+
